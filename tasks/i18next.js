@@ -12,12 +12,7 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('i18next', 'Build locale files.', function() {
     var that = this,
-        len = this.filesSrc.length,
-        outputDir,
-        outputFile,
-        originalFile,
-        destFile,
-        merged;
+        len = this.filesSrc.length;
 
     var mergeRecursive = function(obj1, obj2) {
       for (var p in obj2) {
@@ -37,26 +32,29 @@ module.exports = function(grunt) {
       return obj1;
     };
 
+// rootdir: assets/locates
+// subdir: zh
+// filename: translation.json
     var iterateTroughFiles = function(abspath, rootdir, subdir, filename){
       if (abspath.indexOf('/.svn') === -1){
-        outputDir = that.data.dest;
-        outputFile = outputDir + '/' + filename;
+        //outputDir = that.data.dest;
+        var outputFile = that.data.dest;
 
-        // If output dir doesnt exists, then create it
-        if (!grunt.file.exists(outputDir)) {
-          grunt.file.mkdir(outputDir);
-        }
+        var originalContent = grunt.file.readJSON(abspath);
 
-        originalFile = grunt.file.readJSON(abspath);
+        // wrap the content according to lng -> namespace -> key -> nested key
+        var newContent = {};
+        newContent[subdir] = {};
+        newContent[subdir][filename.replace(/\.[^/.]+$/, "")] = originalContent;
 
         // if dest file doenst exist, then just copy it.
         if (!grunt.file.exists(outputFile)) {
-          grunt.file.write(outputFile, JSON.stringify(originalFile));
+          grunt.file.write(outputFile, JSON.stringify(newContent));
         } else {
           // read source file, read dest file. merge them. write it in dest file
-          destFile = grunt.file.readJSON(outputFile);
+          var destFile = grunt.file.readJSON(outputFile);
 
-          merged = mergeRecursive(destFile, originalFile);
+          var merged = mergeRecursive(destFile, newContent);
 
           grunt.file.write(outputFile, JSON.stringify(merged));
         }

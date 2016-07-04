@@ -1,6 +1,6 @@
 # grunt-i18next [![Build Status](https://travis-ci.org/sabarasaba/grunt-i18next.png?branch=master)](https://travis-ci.org/sabarasaba/grunt-i18next)
 
-> Bundle language resource files for i18next.
+> Merge language resource files for i18next to a single bundle file.
 
 
 
@@ -34,8 +34,8 @@ Task targets, files and options may be specified according to the grunt [Configu
 ```js
 i18next: {
   locales:{
-    src: ['application/**/locales'],
-    dest: 'application/languages'
+    src: ['asset/locales'],
+    dest: 'asset/locales/translation.json'
   }
 }
 ```
